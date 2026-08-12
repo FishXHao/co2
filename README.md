@@ -117,7 +117,7 @@ npm run test:watch
 | 變數 | 說明 | 預設值 |
 |------|------|--------|
 | `VITE_API_BASE_URL` | API 基底路徑 | `/api` |
-| `VITE_MOCK_MODE` | 是否啟用服務/申辦的模擬資料 | `false` |
+| `VITE_MOCK_MODE` | 是否啟用服務/申辦的模擬資料 | `true`（未設定時預設啟用） |
 
 ### 前端架構
 

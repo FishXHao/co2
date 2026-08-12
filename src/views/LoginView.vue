@@ -46,7 +46,11 @@ async function onSubmit() {
   try {
     await auth.login({ username: values.username, password: values.password })
     ui.success('登入成功')
-    const redirect = route.query.redirect || { name: 'home' }
+    // Validate redirect to prevent open redirect attacks
+    const raw = route.query.redirect
+    const redirect = typeof raw === 'string' && raw.startsWith('/') && !raw.includes('://')
+      ? raw
+      : { name: 'home' }
     router.push(redirect)
   } catch (e) {
     formError.value = e?.message || '登入失敗，請確認帳號密碼'
