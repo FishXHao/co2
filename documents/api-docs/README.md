@@ -9,14 +9,18 @@
 
 ## 📂 現有文件
 
-- **[swagger.json](swagger.json)** - 完整 API 規格文件（OpenAPI 3.0）
+- **[swagger.json](swagger.json)** - 登入系統 API 規格文件（OpenAPI 3.0）
+- **[carbon-capture-swagger.json](carbon-capture-swagger.json)** - 碳捕捉與封存監測 API 規格文件（OpenAPI 3.0，參考台灣中油碳封存示範場域環境資訊網站整理，目前僅完成 API Doc 階段，對應 SD Doc／DB Schema 尚未建立）
+- **[carbon-capture-api.md](carbon-capture-api.md)** - `carbon-capture-swagger.json` 輔助說明文件（來源、功能對應、端點總覽、待辦事項）
 
 ## 檔案組織建議
 
 ```
 api-docs/
-├── README.md              # 本檔案
-├── swagger.json           # 完整 API 規格
+├── README.md                      # 本檔案
+├── swagger.json                   # 登入系統 API 規格
+├── carbon-capture-swagger.json    # 碳捕捉與封存監測 API 規格
+├── carbon-capture-api.md          # 碳捕捉與封存監測 API 輔助說明
 ```
 
 ## 參考時機

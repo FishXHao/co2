@@ -1,0 +1,877 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "碳捕捉與封存監測 API",
+    "version": "1.0.0",
+    "description": "參考台灣中油「碳封存示範場域環境資訊」網站（https://service.cpc.com.tw:8101）功能整理之 API 規格，涵蓋灌注量摘要、自動連續監測（大氣 CO2、土壤氣體、地下水水質、微震）、環境定期監測（生態、交通量、噪音、地下水）、負碳科技知識內容與科普影音。此文件僅涵蓋 API Doc 階段，對應之 SD Doc / DB Schema 尚未建立，實作前應先補齊。",
+    "contact": {
+      "name": "API Support",
+      "email": "support@copilot-lab.dev"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001",
+      "description": "開發環境"
+    },
+    {
+      "url": "https://api.copilot-lab.dev",
+      "description": "生產環境（規劃中）"
+    }
+  ],
+  "tags": [
+    { "name": "InjectionVolume", "description": "二氧化碳灌注量摘要與紀錄" },
+    { "name": "Stations", "description": "監測站點主檔資訊" },
+    { "name": "AtmosphereMonitoring", "description": "大氣即時 CO2 監測" },
+    { "name": "SoilGasMonitoring", "description": "土壤氣體即時監測" },
+    { "name": "GroundwaterMonitoring", "description": "地下水水質即時監測" },
+    { "name": "SeismicMonitoring", "description": "微震監測" },
+    { "name": "PeriodicMonitoring", "description": "環境定期監測（生態、交通量、噪音、地下水）" },
+    { "name": "KnowledgeContent", "description": "負碳科技與視野知識內容" },
+    { "name": "EducationalVideos", "description": "碳封存相關科普影音" }
+  ],
+  "paths": {
+    "/api/carbon-capture/injection-volumes/summary": {
+      "get": {
+        "tags": ["InjectionVolume"],
+        "summary": "取得灌注量摘要",
+        "description": "取得本日灌注量、本月灌注量與二氧化碳累積灌注量（含目標值）",
+        "operationId": "getInjectionVolumeSummary",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InjectionVolumeSummary" }
+              }
+            }
+          },
+          "500": {
+            "description": "伺服器錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/injection-records": {
+      "get": {
+        "tags": ["InjectionVolume"],
+        "summary": "查詢灌注紀錄",
+        "description": "依日期區間查詢每日灌注量歷史紀錄",
+        "operationId": "listInjectionRecords",
+        "parameters": [
+          { "$ref": "#/components/parameters/StartDate" },
+          { "$ref": "#/components/parameters/EndDate" }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/InjectionRecord" }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      },
+      "post": {
+        "tags": ["InjectionVolume"],
+        "summary": "新增灌注紀錄",
+        "description": "新增單日灌注量紀錄（供內部系統或人工建檔使用）",
+        "operationId": "createInjectionRecord",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InjectionRecordInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "新增成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/InjectionRecord" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "403": {
+            "description": "無權限",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/stations": {
+      "get": {
+        "tags": ["Stations"],
+        "summary": "取得監測站點列表",
+        "description": "取得所有監測站點主檔資料，可依監測類型篩選",
+        "operationId": "listStations",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "監測類型篩選",
+            "required": false,
+            "schema": { "$ref": "#/components/schemas/MonitoringType" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Station" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Stations"],
+        "summary": "新增監測站點",
+        "operationId": "createStation",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StationInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "新增成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Station" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "403": {
+            "description": "無權限",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/stations/{stationId}": {
+      "get": {
+        "tags": ["Stations"],
+        "summary": "取得單一監測站點資訊",
+        "operationId": "getStation",
+        "parameters": [{ "$ref": "#/components/parameters/StationId" }],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Station" } } }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Stations"],
+        "summary": "更新監測站點資訊",
+        "operationId": "updateStation",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "$ref": "#/components/parameters/StationId" }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StationInput" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Station" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "403": {
+            "description": "無權限",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Stations"],
+        "summary": "刪除監測站點",
+        "operationId": "deleteStation",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "$ref": "#/components/parameters/StationId" }],
+        "responses": {
+          "204": { "description": "刪除成功" },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "403": {
+            "description": "無權限",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/monitoring/atmosphere": {
+      "get": {
+        "tags": ["AtmosphereMonitoring"],
+        "summary": "取得各站點大氣即時 CO2 監測值",
+        "description": "取得城中站、梅南里站、坪頂站、封存場站等各站點最新 CO2 濃度（ppm）與狀態",
+        "operationId": "listAtmosphereReadings",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MonitoringReading" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["AtmosphereMonitoring"],
+        "summary": "上傳大氣 CO2 監測數值",
+        "description": "供監測設備／感測器上傳即時讀值使用",
+        "operationId": "createAtmosphereReading",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MonitoringReadingInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "新增成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MonitoringReading" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/monitoring/atmosphere/{stationId}/history": {
+      "get": {
+        "tags": ["AtmosphereMonitoring"],
+        "summary": "查詢單一站點大氣 CO2 歷史監測資料",
+        "operationId": "getAtmosphereHistory",
+        "parameters": [
+          { "$ref": "#/components/parameters/StationId" },
+          { "$ref": "#/components/parameters/StartDate" },
+          { "$ref": "#/components/parameters/EndDate" }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MonitoringReading" } }
+              }
+            }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/monitoring/soil-gas": {
+      "get": {
+        "tags": ["SoilGasMonitoring"],
+        "summary": "取得土壤氣體即時監測值",
+        "description": "取得封存場站土壤氣體 CO2 濃度（%）與狀態",
+        "operationId": "listSoilGasReadings",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MonitoringReading" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["SoilGasMonitoring"],
+        "summary": "上傳土壤氣體監測數值",
+        "operationId": "createSoilGasReading",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MonitoringReadingInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "新增成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MonitoringReading" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/monitoring/soil-gas/{stationId}/history": {
+      "get": {
+        "tags": ["SoilGasMonitoring"],
+        "summary": "查詢單一站點土壤氣體歷史監測資料",
+        "operationId": "getSoilGasHistory",
+        "parameters": [
+          { "$ref": "#/components/parameters/StationId" },
+          { "$ref": "#/components/parameters/StartDate" },
+          { "$ref": "#/components/parameters/EndDate" }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MonitoringReading" } }
+              }
+            }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/monitoring/groundwater-quality": {
+      "get": {
+        "tags": ["GroundwaterMonitoring"],
+        "summary": "取得地下水水質即時監測值",
+        "description": "取得封存場站地下水酸鹼值（pH）與正常範圍、狀態",
+        "operationId": "listGroundwaterReadings",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MonitoringReading" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["GroundwaterMonitoring"],
+        "summary": "上傳地下水水質監測數值",
+        "operationId": "createGroundwaterReading",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MonitoringReadingInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "新增成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MonitoringReading" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/monitoring/groundwater-quality/{stationId}/history": {
+      "get": {
+        "tags": ["GroundwaterMonitoring"],
+        "summary": "查詢單一站點地下水水質歷史監測資料",
+        "operationId": "getGroundwaterHistory",
+        "parameters": [
+          { "$ref": "#/components/parameters/StationId" },
+          { "$ref": "#/components/parameters/StartDate" },
+          { "$ref": "#/components/parameters/EndDate" }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MonitoringReading" } }
+              }
+            }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/monitoring/seismic": {
+      "get": {
+        "tags": ["SeismicMonitoring"],
+        "summary": "取得微震即時監測資料",
+        "description": "取得封存場站微震監測事件與狀態",
+        "operationId": "listSeismicReadings",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MonitoringReading" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["SeismicMonitoring"],
+        "summary": "上傳微震監測事件",
+        "operationId": "createSeismicReading",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MonitoringReadingInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "新增成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MonitoringReading" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/periodic-monitorings": {
+      "get": {
+        "tags": ["PeriodicMonitoring"],
+        "summary": "取得環境定期監測分類列表",
+        "description": "取得生態監測、交通量監測、環境噪音監測、地下水監測等定期監測分類與最新報告摘要",
+        "operationId": "listPeriodicMonitorings",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": { "$ref": "#/components/schemas/PeriodicMonitoringCategory" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/PeriodicMonitoringReport" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/periodic-monitorings/{reportId}": {
+      "get": {
+        "tags": ["PeriodicMonitoring"],
+        "summary": "取得單一定期監測報告內容",
+        "operationId": "getPeriodicMonitoringReport",
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PeriodicMonitoringReport" } } }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/knowledge-articles": {
+      "get": {
+        "tags": ["KnowledgeContent"],
+        "summary": "取得負碳科技與視野知識文章列表",
+        "description": "取得環保對策、碳封存小百科、國際案例等文章列表",
+        "operationId": "listKnowledgeArticles",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": { "$ref": "#/components/schemas/KnowledgeCategory" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/KnowledgeArticle" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["KnowledgeContent"],
+        "summary": "新增知識文章",
+        "operationId": "createKnowledgeArticle",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/KnowledgeArticleInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "新增成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/KnowledgeArticle" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "403": {
+            "description": "無權限",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/knowledge-articles/{articleId}": {
+      "get": {
+        "tags": ["KnowledgeContent"],
+        "summary": "取得單一知識文章內容",
+        "operationId": "getKnowledgeArticle",
+        "parameters": [
+          { "name": "articleId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/KnowledgeArticle" } } }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/videos": {
+      "get": {
+        "tags": ["EducationalVideos"],
+        "summary": "取得碳封存相關科普影音列表",
+        "description": "取得碳來源、碳捕捉、碳再利用、碳運輸、碳封存（陸域／濱海／海域封存）等影片列表",
+        "operationId": "listEducationalVideos",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/EducationalVideo" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["EducationalVideos"],
+        "summary": "新增科普影音",
+        "operationId": "createEducationalVideo",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EducationalVideoInput" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "新增成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EducationalVideo" } } }
+          },
+          "400": {
+            "description": "參數錯誤",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "未認證",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "403": {
+            "description": "無權限",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/api/carbon-capture/videos/{videoId}": {
+      "get": {
+        "tags": ["EducationalVideos"],
+        "summary": "取得單一科普影音資訊",
+        "operationId": "getEducationalVideo",
+        "parameters": [
+          { "name": "videoId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EducationalVideo" } } }
+          },
+          "404": {
+            "description": "找不到資源",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "StationId": {
+        "name": "stationId",
+        "in": "path",
+        "required": true,
+        "description": "監測站點代碼",
+        "schema": { "type": "string" }
+      },
+      "StartDate": {
+        "name": "startDate",
+        "in": "query",
+        "required": false,
+        "description": "查詢起始日期（YYYY-MM-DD）",
+        "schema": { "type": "string", "format": "date" }
+      },
+      "EndDate": {
+        "name": "endDate",
+        "in": "query",
+        "required": false,
+        "description": "查詢結束日期（YYYY-MM-DD）",
+        "schema": { "type": "string", "format": "date" }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "description": "錯誤訊息" },
+          "code": { "type": "string", "description": "錯誤代碼" }
+        }
+      },
+      "MonitoringType": {
+        "type": "string",
+        "description": "監測類型",
+        "enum": ["atmosphere", "soil_gas", "groundwater_quality", "seismic"]
+      },
+      "MonitoringStatus": {
+        "type": "string",
+        "description": "監測狀態：正常／警示／儀器維護檢修中",
+        "enum": ["normal", "warning", "maintenance"]
+      },
+      "Station": {
+        "type": "object",
+        "properties": {
+          "stationId": { "type": "string", "description": "站點代碼" },
+          "name": { "type": "string", "description": "站點名稱，例如：城中站、梅南里站、坪頂站、封存場站" },
+          "type": { "$ref": "#/components/schemas/MonitoringType" },
+          "location": {
+            "type": "object",
+            "properties": {
+              "latitude": { "type": "number", "format": "double" },
+              "longitude": { "type": "number", "format": "double" }
+            }
+          }
+        }
+      },
+      "StationInput": {
+        "type": "object",
+        "required": ["name", "type"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "$ref": "#/components/schemas/MonitoringType" },
+          "location": {
+            "type": "object",
+            "properties": {
+              "latitude": { "type": "number", "format": "double" },
+              "longitude": { "type": "number", "format": "double" }
+            }
+          }
+        }
+      },
+      "MonitoringReading": {
+        "type": "object",
+        "properties": {
+          "stationId": { "type": "string", "description": "站點代碼" },
+          "stationName": { "type": "string", "description": "站點名稱" },
+          "value": { "type": "number", "format": "double", "description": "監測數值，例如 CO2 濃度、酸鹼值" },
+          "unit": { "type": "string", "description": "單位，例如 ppm、%、pH" },
+          "baseline": { "type": "number", "format": "double", "description": "基準值／正常範圍下限參考值" },
+          "thresholdMax": { "type": "number", "format": "double", "description": "正常範圍上限（如地下水酸鹼值上限）" },
+          "status": { "$ref": "#/components/schemas/MonitoringStatus" },
+          "recordedAt": { "type": "string", "format": "date-time", "description": "資料時間" }
+        }
+      },
+      "MonitoringReadingInput": {
+        "type": "object",
+        "required": ["stationId", "value", "unit", "recordedAt"],
+        "properties": {
+          "stationId": { "type": "string" },
+          "value": { "type": "number", "format": "double" },
+          "unit": { "type": "string" },
+          "recordedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "InjectionVolumeSummary": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "format": "date", "description": "資料日期" },
+          "dailyVolumeTons": { "type": "number", "format": "double", "description": "本日灌注量（噸）" },
+          "monthlyVolumeTons": { "type": "number", "format": "double", "description": "本月灌注量（噸）" },
+          "cumulativeVolumeTons": { "type": "number", "format": "double", "description": "二氧化碳累積灌注量（噸）" },
+          "targetVolumeTons": { "type": "number", "format": "double", "description": "累積灌注目標量（噸），例如 300,000 噸" }
+        }
+      },
+      "InjectionRecord": {
+        "type": "object",
+        "properties": {
+          "recordId": { "type": "string" },
+          "date": { "type": "string", "format": "date" },
+          "volumeTons": { "type": "number", "format": "double", "description": "當日灌注量（噸）" }
+        }
+      },
+      "InjectionRecordInput": {
+        "type": "object",
+        "required": ["date", "volumeTons"],
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "volumeTons": { "type": "number", "format": "double" }
+        }
+      },
+      "PeriodicMonitoringCategory": {
+        "type": "string",
+        "description": "環境定期監測分類",
+        "enum": ["ecology", "traffic", "noise", "groundwater"]
+      },
+      "PeriodicMonitoringReport": {
+        "type": "object",
+        "properties": {
+          "reportId": { "type": "string" },
+          "category": { "$ref": "#/components/schemas/PeriodicMonitoringCategory" },
+          "title": { "type": "string", "description": "報告標題，例如：生態監測、交通量監測、環境噪音監測、地下水監測" },
+          "summary": { "type": "string", "description": "報告摘要內容" },
+          "reportDate": { "type": "string", "format": "date" },
+          "attachmentUrl": { "type": "string", "format": "uri", "description": "報告附件連結" }
+        }
+      },
+      "KnowledgeCategory": {
+        "type": "string",
+        "description": "負碳科技與視野文章分類",
+        "enum": ["environmental_measure", "storage_encyclopedia", "international_case"]
+      },
+      "KnowledgeArticle": {
+        "type": "object",
+        "properties": {
+          "articleId": { "type": "string" },
+          "category": { "$ref": "#/components/schemas/KnowledgeCategory" },
+          "title": { "type": "string", "description": "文章標題，例如：環保對策、碳封存小百科、國際案例" },
+          "content": { "type": "string", "description": "文章內容（HTML 或純文字）" },
+          "publishedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "KnowledgeArticleInput": {
+        "type": "object",
+        "required": ["category", "title", "content"],
+        "properties": {
+          "category": { "$ref": "#/components/schemas/KnowledgeCategory" },
+          "title": { "type": "string" },
+          "content": { "type": "string" }
+        }
+      },
+      "EducationalVideo": {
+        "type": "object",
+        "properties": {
+          "videoId": { "type": "string" },
+          "title": { "type": "string", "description": "影片標題，例如：碳來源、碳捕捉、碳再利用、碳運輸、碳封存（陸域／濱海／海域封存）" },
+          "thumbnailUrl": { "type": "string", "format": "uri", "description": "影片縮圖網址" },
+          "videoUrl": { "type": "string", "format": "uri", "description": "影片播放網址（含外部平台，如 YouTube）" }
+        }
+      },
+      "EducationalVideoInput": {
+        "type": "object",
+        "required": ["title", "videoUrl"],
+        "properties": {
+          "title": { "type": "string" },
+          "thumbnailUrl": { "type": "string", "format": "uri" },
+          "videoUrl": { "type": "string", "format": "uri" }
+        }
+      }
+    }
+  }
+}
