@@ -12,6 +12,34 @@
 
 ## 📂 現有文件
 
+### 🎨 UI/UX/Frontend Prototype 文件（UX 輸出，WBS 4.0 P2）
+
+> 閱讀順序：`ui-architecture.md` → `ui-wireframes.md` → `ui-design-system.md` → `responsive-accessibility-spec.md` → `frontend-specification.md`
+
+| 文件 | 狀態 | 用途 | 對應 WBS |
+|------|------|------|---------|
+| **[ui-architecture.md](ui-architecture.md)** | Draft | MVP 頁面/路由清單、網站地圖、導航、角色權限矩陣、404/403/500 | 4.1 |
+| **[ui-wireframes.md](ui-wireframes.md)** | Draft | 低保真 Prototype，涵蓋登入、列表、表單、結果、空白、錯誤及響應式差異 | 4.2 |
+| **[ui-design-system.md](ui-design-system.md)** | Draft | UI Token、色彩/字體/間距/圓角/陰影、共用元件規格、元件狀態、錯誤訊息 | 4.3 |
+| **[responsive-accessibility-spec.md](responsive-accessibility-spec.md)** | Draft | 斷點、響應式行為、觸控尺寸、鍵盤/Focus、語意 HTML、ARIA、WCAG 規格 | 4.4 |
+| **[frontend-specification.md](frontend-specification.md)** | Draft | Vue 3 + Vite 前端目錄/模組、Router、Pinia、API Service、表單驗證、狀態模型 | 4.5 |
+
+#### Prototype 文件閱讀指引
+
+```
+資訊架構（ui-architecture）
+    ↓ 頁面與路由
+低保真 Wireframe（ui-wireframes）
+    ↓ 版面與元件
+視覺與元件規格（ui-design-system）
+    ↓ Token 與狀態
+響應式/無障礙（responsive-accessibility-spec）
+    ↓ 實作要求
+前端實作規格（frontend-specification）
+    ↓ 開發與測試交接
+前端測試案例（../test-case/frontend/README.md）
+```
+
 ### 核心架構文件（SA 輸出）
 - **[architecture.md](architecture.md)** - 系統架構設計文件
 - **[technical-spec.md](technical-spec.md)** - 技術規格文件
@@ -28,18 +56,24 @@
 
 ```
 sd-docs/
-├── README.md                    # 本檔案
-├── sow.md                       # Statement of Work 與開發範圍規劃
-├── backend-specification.md     # 後端系統規格（已完成）
-├── frontend-specification.md    # 前端系統規格（待補充）
-├── architecture.md              # 系統架構總覽
-├── requirements.md              # 功能需求規格
-├── technical-spec.md            # 技術規格
-├── design-decisions.md          # 設計決策記錄 (ADR)
-├── database-design.md           # 資料庫設計文件
-├── api-design.md                # API 設計原則
-├── security.md                  # 安全性需求
-└── performance.md               # 效能需求
+├── README.md                           # 本檔案
+│
+├── ── UI/UX/Frontend Prototype ──
+├── ui-architecture.md                  # 資訊架構與網站地圖（Draft）
+├── ui-wireframes.md                    # 低保真 Wireframe（Draft）
+├── ui-design-system.md                 # Design System 規格（Draft）
+├── responsive-accessibility-spec.md    # 響應式與無障礙規格（Draft）
+├── frontend-specification.md           # 前端實作規格（Draft）
+│
+├── ── 系統架構與技術 ──
+├── architecture.md                     # 系統架構總覽
+├── technical-spec.md                   # 技術規格
+├── design-decisions.md                 # 設計決策記錄 (ADR)
+├── backend-specification.md            # 後端系統規格（已完成）
+│
+└── ── 待補充 ──
+    ├── requirements.md                 # 功能需求規格（待補充）
+    └── database-design.md              # 資料庫設計（參考 ../db-schema/）
 ```
 
 ## 文件類型說明

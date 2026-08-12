@@ -125,11 +125,11 @@
 
 | WBS | 任務 | 主要產出 | 負責 | 依賴 | 工時 | 完成條件 |
 |------|------|----------|------|------|------:|----------|
-| 4.1 | 資訊架構與網站地圖 | `ui-architecture.md`、網站地圖 | UX、PM | 3.0 | 8-12h | 頁面層級、導航、入口與返回路徑獲核准 |
-| 4.2 | 核心流程與 Wireframe | 流程圖、低保真 Wireframe | UX、BA | 4.1 | 10-16h | 核心流程與正常/例外狀態可供評審 |
-| 4.3 | 視覺系統與共用元件 | UI token、元件規格、高保真稿 | UX | 4.2 | 10-16h | 色彩、字體、間距、元件狀態與內容規則完成 |
-| 4.4 | 響應式與無障礙規格 | 斷點、鍵盤/焦點、ARIA、對比要求 | UX、QA | 4.3 | 6-10h | 桌面/平板/手機及 WCAG 目標明確 |
-| 4.5 | 設計交付與開發評審 | 設計規格、切圖/資產、評審紀錄 | UX、PG、QA | 4.1-4.4 | 6-10h | PG 可依規格實作，QA 可建立 UI 驗收案例 |
+| 4.1 | 資訊架構與網站地圖 | **[`ui-architecture.md`](../sd-docs/ui-architecture.md)**、網站地圖 | UX、PM | 3.0 | 8-12h | 頁面層級、導航、入口與返回路徑獲核准 |
+| 4.2 | 核心流程與 Wireframe | 流程圖、**[`ui-wireframes.md`](../sd-docs/ui-wireframes.md)**（低保真 Prototype） | UX、BA | 4.1 | 10-16h | 核心流程與正常/例外狀態可供評審 |
+| 4.3 | 視覺系統與共用元件 | **[`ui-design-system.md`](../sd-docs/ui-design-system.md)**（UI Token、元件規格、高保真稿） | UX | 4.2 | 10-16h | 色彩、字體、間距、元件狀態與內容規則完成 |
+| 4.4 | 響應式與無障礙規格 | **[`responsive-accessibility-spec.md`](../sd-docs/responsive-accessibility-spec.md)**（斷點、鍵盤/焦點、ARIA、對比要求） | UX、QA | 4.3 | 6-10h | 桌面/平板/手機及 WCAG 目標明確 |
+| 4.5 | 設計交付與開發評審 | **[`frontend-specification.md`](../sd-docs/frontend-specification.md)**（前端實作規格）、切圖/資產、評審紀錄 | UX、PG、QA | 4.1-4.4 | 6-10h | PG 可依規格實作，QA 可建立 UI 驗收案例 |
 
 **4.0 階段出口條件**：BA/UX/SA/PG/QA 核准網站地圖、核心流程、視覺稿與設計驗收規格。
 

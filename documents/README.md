@@ -23,15 +23,18 @@ documents/
 2. **確認系統架構** → `sd-docs/architecture.md`
 3. **查看資料模型** → `db-schema/`
 4. **確認 API 規格** → `api-docs/`
+5. **前端 UI/UX 設計** → `sd-docs/ui-architecture.md`（起點）
 
 ### 開發中參考
 - 實作功能時：參考對應的系統規格和 API 文件
 - 資料庫操作：嚴格遵循 `db-schema/` 定義
 - API 開發：依照 `api-docs/` 的 Swagger 規格
+- 前端開發：參考 `sd-docs/frontend-specification.md`、`sd-docs/ui-design-system.md`
 
 ### 測試驗證
 - 撰寫測試：參考 `test-case/` 的測試案例
 - 驗收功能：對照測試案例的預期結果
+- UI/UX 驗收：對照 `sd-docs/ui-wireframes.md` 與 `sd-docs/responsive-accessibility-spec.md`
 
 ## 📋 各目錄說明
 
@@ -52,8 +55,41 @@ documents/
 
 ### 系統規格 (sd-docs/)
 - **格式**: Markdown
-- **內容**: 需求、架構、技術規格、設計決策
+- **內容**: 需求、架構、技術規格、設計決策、UI/UX Prototype 文件
 - **參考**: [sd-docs/README.md](sd-docs/README.md)
+
+### 🎨 UI/UX/Frontend Prototype (sd-docs/)
+依序閱讀以下文件以完整掌握前端設計規格（狀態均為 Draft，待 P0 核准後更新）：
+
+| 文件 | 用途 |
+|------|------|
+| [sd-docs/ui-architecture.md](sd-docs/ui-architecture.md) | MVP 頁面/路由清單、網站地圖、角色權限矩陣 |
+| [sd-docs/ui-wireframes.md](sd-docs/ui-wireframes.md) | 低保真 Wireframe，所有核心頁面與狀態 |
+| [sd-docs/ui-design-system.md](sd-docs/ui-design-system.md) | Design Token、元件規格、錯誤訊息規則 |
+| [sd-docs/responsive-accessibility-spec.md](sd-docs/responsive-accessibility-spec.md) | 斷點、無障礙（WCAG）、鍵盤/ARIA 規格 |
+| [sd-docs/frontend-specification.md](sd-docs/frontend-specification.md) | Vue 3 前端架構、Router、Pinia、API、表單驗證 |
+
+#### Prototype 生命週期
+
+```
+需求確認（SOW/WBS）
+    ↓
+資訊架構（ui-architecture.md）
+    ↓
+低保真 Wireframe（ui-wireframes.md）
+    ↓
+視覺與元件規格（ui-design-system.md）
+    ↓
+響應式/無障礙規格（responsive-accessibility-spec.md）
+    ↓
+前端實作規格（frontend-specification.md）
+    ↓
+UI 驗收矩陣（test-case/frontend/README.md）
+    ↓
+開發實作（src/）
+    ↓
+QA 驗收
+```
 
 ### SOW (sow/)
 - **格式**: Markdown
@@ -63,9 +99,9 @@ documents/
 
 ### 測試案例 (test-case/)
 - **組織**: 前端/後端分離
-- **內容**: 測試場景、步驟、預期結果
+- **內容**: 測試場景、步驟、預期結果、UI 驗收矩陣
 - **參考**: 
-  - [test-case/frontend/README.md](test-case/frontend/README.md)
+  - [test-case/frontend/README.md](test-case/frontend/README.md)（含 UI Prototype 驗收索引）
   - [test-case/backend/README.md](test-case/backend/README.md)
 
 ## 🔄 文件生命週期
