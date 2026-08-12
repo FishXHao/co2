@@ -56,11 +56,96 @@
 ### 前端
 - Vue.js 3 (Composition API)
 - Vite
+- Vue Router 4（路由與導覽守衛）
+- Pinia（狀態管理）
+- Axios（API 呼叫）
+- Vitest + @vue/test-utils（單元測試）
 
 ### 後端
 - Node.js
 - Express.js
 - CORS
+
+## 前端開發指南
+
+本專案已建置完整的第一版前端，包含碳捕獲服務瀏覽、申辦流程、登入與帳戶頁面。
+
+### 環境需求
+- Node.js 18+（建議 20+）
+
+### 安裝與啟動
+
+```bash
+# 安裝相依套件
+npm install
+
+# 複製環境變數範本（可選）
+cp .env.example .env
+
+# 同時啟動前端 (3000) 與後端 API (3001)
+npm start
+
+# 或僅啟動前端開發伺服器
+npm run dev
+
+# 僅啟動後端 API
+npm run server
+```
+
+### 建置與預覽
+
+```bash
+# 建置生產版本至 dist/
+npm run build
+
+# 本地預覽建置結果
+npm run preview
+```
+
+### 測試
+
+```bash
+# 執行一次完整單元測試
+npm test
+
+# 監看模式（開發時使用）
+npm run test:watch
+```
+
+### 環境變數
+
+| 變數 | 說明 | 預設值 |
+|------|------|--------|
+| `VITE_API_BASE_URL` | API 基底路徑 | `/api` |
+| `VITE_MOCK_MODE` | 是否啟用服務/申辦的模擬資料 | `false` |
+
+### 前端架構
+
+```
+src/
+├── router/          # Vue Router 設定與導覽守衛
+├── stores/          # Pinia 狀態（auth / user / ui）
+├── services/        # API 封裝（api / auth / services / apply）
+├── composables/     # 可組合函式（useAuth / useApiState / useFormValidation）
+├── views/           # 頁面元件（含 error/ 錯誤頁）
+├── components/
+│   ├── layout/      # 版面元件（Header / Footer / Breadcrumb / SkipLink）
+│   ├── ui/          # 通用 UI 元件（Button / Input / Modal / Toast ...）
+│   └── service/     # 服務相關元件（ServiceCard / ServiceSteps）
+└── assets/styles/   # 設計 tokens、全域樣式與工具類
+```
+
+### 設計系統與可及性
+- 以 CSS 自訂屬性（design tokens）統一色彩、字級、間距與圓角
+- 響應式斷點：xs / sm / md / lg / xl，容器最大寬度 1200px
+- 支援鍵盤操作、ARIA 屬性、`prefers-reduced-motion`、跳至主要內容連結
+- 表單具備即時驗證、錯誤聚焦與防止重複送出
+
+### API 與假設說明
+- **真實端點**（見 `documents/api-docs/swagger.json`）：`POST /api/login`、`GET /api/health`
+- **規劃中 / 模擬端點**：`/api/logout`、`/api/users/me`、`/api/services`、`/api/apply` 等
+  於程式碼中皆以 `// ⚠ ASSUMPTION/MOCK` 標註，並可透過 `VITE_MOCK_MODE` 控制。
+- 認證採 httpOnly cookie（由伺服器管理），前端不於 localStorage 儲存權杖。
 
 ## 使用 Docker 運行
 
@@ -136,16 +221,24 @@ docker run -d -p 3000:80 --name frontend copilot-lab-frontend
 ## 📁 專案結構
 
 ```
-login-app/
+co2/
 ├── src/
+│   ├── assets/styles/         # 設計 tokens、全域與工具樣式
 │   ├── components/
-│   │   └── LoginForm.vue      # 登入表單組件
+│   │   ├── layout/            # Header / Footer / Breadcrumb / SkipLink
+│   │   ├── ui/                # 通用 UI 元件
+│   │   └── service/           # 服務相關元件
+│   ├── composables/           # useAuth / useApiState / useFormValidation
+│   ├── router/                # 路由與導覽守衛
+│   ├── services/              # API 封裝
+│   ├── stores/                # Pinia 狀態
+│   ├── views/                 # 頁面（含 error/ 錯誤頁）
 │   ├── App.vue                # 主應用程式組件
-│   ├── main.js                # 應用程式入口
-│   └── style.css              # 全域樣式
+│   └── main.js                # 應用程式入口
 ├── index.html                 # HTML 模板
 ├── server.js                  # Express 後端伺服器
-├── vite.config.js             # Vite 配置
+├── vite.config.js             # Vite 配置（含 test 設定）
+├── .env.example               # 環境變數範本
 ├── package.json               # 專案配置
 └── README.md                  # 說明文件
 ```

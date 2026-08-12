@@ -1,0 +1,81 @@
+/* Design tokens - single source of truth for the CO2 carbon capture service. */
+:root {
+  /* Brand / Primary */
+  --color-primary-700: #004c99;
+  --color-primary-500: #0066cc;
+  --color-primary-100: #e6f0ff;
+
+  /* Neutral scale */
+  --color-neutral-900: #1a1a1a;
+  --color-neutral-700: #4a4a4a;
+  --color-neutral-400: #9a9a9a;
+  --color-neutral-200: #d9d9d9;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-0: #ffffff;
+
+  /* Semantic colors */
+  --color-success-500: #1a8a4a;
+  --color-success-100: #e6f5ec;
+  --color-error-500: #cc2200;
+  --color-error-100: #fce8e5;
+  --color-warning-500: #cc7700;
+  --color-warning-100: #fff3e0;
+  --color-info-500: #0066cc;
+  --color-info-100: #e6f0ff;
+
+  /* Typography */
+  --font-family-base: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-heading: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+
+  --line-height-tight: 1.25;
+  --line-height-base: 1.6;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Spacing scale */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.14);
+
+  /* Layout */
+  --container-max-width: 1200px;
+
+  /* Motion */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 3px var(--color-primary-100);
+
+  /* Z-index */
+  --z-header: 100;
+  --z-modal: 1000;
+  --z-toast: 1100;
+}

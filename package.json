@@ -8,17 +8,26 @@
     "build": "vite build",
     "preview": "vite preview",
     "server": "node server.js",
-    "start": "concurrently \"npm run server\" \"npm run dev\""
+    "start": "concurrently \"npm run server\" \"npm run dev\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "vue": "^3.4.21",
-    "express": "^4.18.3",
+    "axios": "^1.19.0",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "body-parser": "^1.20.2"
+    "express": "^4.18.3",
+    "pinia": "^4.0.2",
+    "vue": "^3.4.21",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/test-utils": "^2.4.11",
+    "concurrently": "^8.2.2",
+    "happy-dom": "^20.11.2",
+    "jsdom": "^30.0.1",
     "vite": "^5.2.0",
-    "concurrently": "^8.2.2"
+    "vitest": "^4.1.10"
   }
 }
