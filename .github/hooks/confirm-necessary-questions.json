@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/confirm-necessary-questions.js",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .github/hooks/confirm-necessary-questions.ps1",
+        "timeout": 5
+      }
+    ]
+  }
+}
