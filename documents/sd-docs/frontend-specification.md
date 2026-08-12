@@ -5,7 +5,7 @@
 **建立日期**: 2026-08-12  
 **維護者**: SA / PG  
 **上游文件**: [architecture.md](architecture.md)、[technical-spec.md](technical-spec.md)、[ui-architecture.md](ui-architecture.md)、[ui-design-system.md](ui-design-system.md)  
-**相關文件**: [responsive-accessibility-spec.md](responsive-accessibility-spec.md)、[ui-wireframes.md](ui-wireframes.md)、[../api-docs/swagger.json](../api-docs/swagger.json)、[../../documents/test-case/frontend/README.md](../test-case/frontend/README.md)
+**相關文件**: [responsive-accessibility-spec.md](responsive-accessibility-spec.md)、[ui-wireframes.md](ui-wireframes.md)、[../api-docs/swagger.json](../api-docs/swagger.json)、[../test-case/frontend/README.md](../test-case/frontend/README.md)
 
 > **⚠ 假設聲明**：套件版本、路由清單、Pinia Store 分割與 API 服務端點均依現有技術規格假設。規劃中的套件（vue-router、pinia、axios）標示「規劃中」，採用前需確認版本相容性。
 
@@ -446,7 +446,7 @@ export function useApiState() {
 
 ```bash
 # .env.development
-VITE_API_BASE_URL=http://localhost:3000/api
+VITE_API_BASE_URL=http://localhost:3001
 VITE_APP_TITLE=[應用程式名稱（待確認）]
 VITE_ENABLE_DEBUG=true
 
@@ -475,7 +475,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',  // 開發環境 API proxy
+        target: 'http://localhost:3001',  // 開發環境 API proxy
         changeOrigin: true
       }
     }

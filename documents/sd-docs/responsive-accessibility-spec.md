@@ -5,7 +5,7 @@
 **建立日期**: 2026-08-12  
 **維護者**: UX / QA  
 **上游文件**: [ui-architecture.md](ui-architecture.md)、[ui-design-system.md](ui-design-system.md)  
-**相關文件**: [frontend-specification.md](frontend-specification.md)、[ui-wireframes.md](ui-wireframes.md)、[../../documents/test-case/frontend/README.md](../test-case/frontend/README.md)
+**相關文件**: [frontend-specification.md](frontend-specification.md)、[ui-wireframes.md](ui-wireframes.md)、[../test-case/frontend/README.md](../test-case/frontend/README.md)
 
 > **⚠ 假設聲明**：WCAG 等級基準（建議 WCAG 2.1 AA）、支援的瀏覽器版本與裝置清單、螢幕閱讀器測試範圍，以及是否需要多語系支援，均待需求方核准後更新。
 
