@@ -86,6 +86,7 @@
 | **ER-DIAGRAM.md** | 實體關聯圖文件（v1.0 舊版） |
 | **ER-DIAGRAM-v2.md** | 實體關聯圖文件（v2.0.0 最新版） ⭐ |
 | **login-system-er-diagram.drawio** | Draw.io 格式 ER 圖 |
+| **carbon-capture-schema.sql** | 碳捕捉與封存監測資料庫 Schema（依 carbon-capture-swagger.json 設計，v1.0.0） |
 | **README.md** | 本文件 |
 
 > 💡 **建議**: 查看 ER-DIAGRAM-v2.md 以了解最新的資料庫架構設計
