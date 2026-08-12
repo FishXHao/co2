@@ -5,7 +5,7 @@
 **建立日期**: 2026-08-12  
 **維護者**: UX / SA  
 **上游文件**: [../sow/sow.md](../sow/sow.md)、[../sow/wbs.md](../sow/wbs.md)  
-**相關文件**: [ui-wireframes.md](ui-wireframes.md)、[frontend-specification.md](frontend-specification.md)、[../../documents/api-docs/swagger.json](../api-docs/swagger.json)
+**相關文件**: [ui-wireframes.md](ui-wireframes.md)、[frontend-specification.md](frontend-specification.md)、[../api-docs/swagger.json](../api-docs/swagger.json)
 
 > **⚠ 假設聲明**：本文件所有頁面名稱、路由、角色與流程均為規劃假設（Assumption）。實際站點頁面、使用者角色、服務項目及登入機制須於 P0 勘查後由 BA 核准。未核准前不得作為開發基線。
 

@@ -280,8 +280,8 @@ const api = axios.create({
 
 // 請求攔截器：自動附加 Token
 api.interceptors.request.use((config) => {
-  const token = /* 從 Store 或安全儲存取得 */
-  if (token) config.headers.Authorization = `******
+  const token = /* 從 Store 或安全儲存取得 */ null
+  if (token) config.headers.Authorization = '****** [****** 格式，待 SA 確認]'
   return config
 })
 
